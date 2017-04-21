@@ -8,4 +8,13 @@ Copied the docker example and just updated to pull in official Jenkins Alpine im
 
 Commands : 
 
+```
+moby build JenkinsOS.yml
+moby run JenkinsOS
+```
+
+Booted .iso and .vmdk from VirtualBox. Worked fine.
+
+Will add more details later.
+
 
