@@ -34,7 +34,7 @@ Thought it would be even cooler to use Docker in Docker to run the moby tool, th
 
 ```
 docker build -t mobytest:jenkins .
-docker run -it --privileged -v $(PWD)/images:/images mobytest:jenkins
+docker run -it --privileged -v ${PWD}/images:/images mobytest:jenkins
 ```
  
 When the commands complete you should have 4 images stored in $(PWD)/images.
