@@ -37,7 +37,7 @@ docker build -t mobytest:jenkins .
 docker run -it --privileged -v ${PWD}/images:/images mobytest:jenkins
 ```
  
-When the commands complete you should have 4 images stored in ${PWD}/images.
+When the commands complete you should have 4 images stored in ${PWD}/images.  You can use VirtualBox or qemu to verify they boot successfully.
 
 That's as far as I got. Hope it helps some folks get up and running faster.
 
