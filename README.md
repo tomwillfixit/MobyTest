@@ -71,11 +71,12 @@ docker run -it --rm $MOUNTS $DEVKVM "$QEMU_IMAGE"
 Use the same container image that we built earlier "mobytest:jenkins" to test the image is bootable.
 
 ```
-docker run -it --entrypoint /bin/bash --privileged -v ${PWD}/images:/images mobytest:jenkins -c "qemu-system-x86_64 -m 1024 -localtime -smp 2 -k en-us -hda /images/JenkinsOS.qcow2 -nographic"
-
-This next command doesn't work at the moment. Trying for forward port 8080 through to the host.
+This next command may look a little magical but all it's doing is forwarding port 808 from the container running in the VM through qemu to the container running on your host.
 
 docker run -it --entrypoint /bin/bash --name test_image --privileged -v ${PWD}/images:/images -p 0.0.0.0:8080:8080 mobytest:jenkins -c "qemu-system-x86_64 -m 1024 -net user,hostfwd=tcp::8080-:8080 -net nic -localtime -smp 2 -k en-us -hda /images/JenkinsOS.qcow2 -nographic"
+
+Jenkins will be available on your localhost:8080
+
 ```
 
 When the VM has booted you'll see something like : 
@@ -126,6 +127,9 @@ What is inside /containers/services/jenkins?
 config.json  rootfs
 
 ```
+
+The initialAdminPassword for Jenkins is located in : /containers/services/jenkins/rootfs/var/jenkins_home/secrets
+
 The config.json is read-only and contains the metadata for the container service.
 The rootfs contains the usual directories of a linux subsystem and our jenkins_home is in rootfs/var/jenkins_home.
 
