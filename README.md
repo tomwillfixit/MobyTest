@@ -44,7 +44,13 @@ tom-laptop:/scratch/MobyTest# ls images
 JenkinsOS-efi.iso  JenkinsOS-initrd.img  JenkinsOS.iso  JenkinsOS.vmdk
 ```
 
-You can use VirtualBox or qemu to verify they boot successfully.
+## Testing the images are working
+
+### Option 1
+
+You can use VirtualBox or qemu on your host to verify the images are bootable.
+
+### Option 2
 
 There is a handy script in the [linuxkit/scripts](https://github.com/linuxkit/linuxkit/tree/master/scripts) directory to boot the iso using qemu in a container.
 
@@ -58,6 +64,18 @@ DEVKVM="--device=/dev/kvm"
 
 docker run -it --rm $MOUNTS $DEVKVM "$QEMU_IMAGE"
 
+```
+
+### Option 3
+
+Use the same container image that we built earlier "mobytest:jenkins" to test the image is bootable.
+
+```
+docker run -it --entrypoint /bin/bash --privileged -v ${PWD}/images:/images mobytest:jenkins -c "qemu-system-x86_64 -m 1024 -localtime -smp 2 -k en-us -hda /images/JenkinsOS.qcow2 -nographic"
+
+This next command doesn't work at the moment. Trying for forward port 8080 through to the host.
+
+docker run -it --entrypoint /bin/bash --name test_image --privileged -v ${PWD}/images:/images -p 0.0.0.0:8080:8080 mobytest:jenkins -c "qemu-system-x86_64 -m 1024 -net user,hostfwd=tcp::8080-:8080 -net nic -localtime -smp 2 -k en-us -hda /images/JenkinsOS.qcow2 -nographic"
 ```
 
 When the VM has booted you'll see something like : 
@@ -81,7 +99,7 @@ So far so good. What now?
 
 Check which containers are running :
 ```
-/usr/bin/runc list
+runc list
 
 ID          PID         STATUS      BUNDLE                         CREATED                          OWNER
 dhcpcd      693         running     /containers/services/dhcpcd    2017-04-22T00:25:00.450608657Z   root
@@ -90,6 +108,15 @@ ntpd        729         running     /containers/services/ntpd      2017-04-22T00
 ```
 
 We can see our Jenkins container, defined [here](JenkinsOS.yml) is running.
+
+What is running in the Jenkins container?
+```
+runc ps jenkins
+
+PID   USER     TIME   COMMAND
+  624 root       0:00 /bin/tini -- /usr/local/bin/jenkins.sh
+  668 root       3:03 java -jar /usr/share/jenkins/jenkins.war
+```
 
 ### Services and Filesystem
 
@@ -102,6 +129,22 @@ config.json  rootfs
 The config.json is read-only and contains the metadata for the container service.
 The rootfs contains the usual directories of a linux subsystem and our jenkins_home is in rootfs/var/jenkins_home.
 
+Try updating the OS :
+
+```
+apk update
+ERROR: Unable to lock database: Read-only file system
+ERROR: Failed to open apk database: Read-only file system
+```
+
+Wait what?
+
+This is by design.  
+
+"LinuxKit has a read-only root filesystem: system configuration and sensitive files cannot be modified after boot. The only files on LinuxKit that are allowed to be modified pertain to namespaced container data and stateful partitions."
+
+This will help encourage the re-building rather than the modification of the base OS. 
+ 
 # Summary
 
 That's as far as I got. Hope it helps some folks get up and running faster. This is a nice way to use the commands we already know and try out linuxKit without installing tooling locally.

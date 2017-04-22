@@ -86,3 +86,4 @@ outputs:
   - format: iso-bios
   - format: iso-efi
   - format: vmdk 
+  - format: qcow2 

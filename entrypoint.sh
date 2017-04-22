@@ -16,4 +16,4 @@ moby build JenkinsOS.yml
 
 # Copy them out to the host
 # I didn't test this. Laptop almost dead and starbucks wifi is terrible.
-mv JenkinsOS-efi.iso JenkinsOS-initrd.img JenkinsOS.iso JenkinsOS.vmdk /images 
+mv * /images 
