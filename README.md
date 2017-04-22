@@ -71,11 +71,10 @@ docker run -it --rm $MOUNTS $DEVKVM "$QEMU_IMAGE"
 Use the same container image that we built earlier "mobytest:jenkins" to test the image is bootable.
 
 ```
-This next command may look a little magical but all it's doing is forwarding port 808 from the container running in the VM through qemu to the container running on your host.
+This next command may look a little magical but all it's doing is forwarding port 8080 from the container running in the VM through qemu to the container running on your host.  Jenkins will be available on your localhost:8080
 
 docker run -it --entrypoint /bin/bash --name test_image --privileged -v ${PWD}/images:/images -p 0.0.0.0:8080:8080 mobytest:jenkins -c "qemu-system-x86_64 -m 1024 -net user,hostfwd=tcp::8080-:8080 -net nic -localtime -smp 2 -k en-us -hda /images/JenkinsOS.qcow2 -nographic"
 
-Jenkins will be available on your localhost:8080
 
 ```
 
