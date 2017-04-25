@@ -12,7 +12,7 @@ Followed the steps [here](https://github.com/linuxkit/linuxkit) and installed mo
 
 ## Commands
 ```
-moby build JenkinsOS.yml
+moby build configs/JenkinsOS.yml
 moby run JenkinsOS
 
 ```
