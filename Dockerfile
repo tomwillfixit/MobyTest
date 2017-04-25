@@ -1,16 +1,26 @@
 FROM golang:1.7.5-alpine3.5
 
-#Update to latest packages and install bash
-RUN apk update && apk add bash git qemu-system-x86_64 gcc docker openrc --no-cache
+#Set ENV vars
+ENV CGO_ENABLED=0 \
+    CONFIG_FILE
 
 #Install linuxKit 'moby' tool
-RUN CGO_ENABLED=0 go get -u github.com/linuxkit/linuxkit/src/cmd/moby
+RUN set -ex \
+    && apk update \
+    && apk add --no-cache \
+           bash \
+           git \
+           qemu-system-x86_64 \
+           gcc \
+           docker \
+           openrc \
+    && go get -u github.com/moby/tool/cmd/moby
 
-#Add customised JenkinsOS.yml 
-ADD JenkinsOS.yml /tmp
+#Add entrypoint
+COPY entrypoint.sh /tmp
 
-ADD entrypoint.sh /tmp
+WORKDIR /images
+VOLUME /images
+VOLUME /configs
 
-WORKDIR /tmp
-
-ENTRYPOINT ./entrypoint.sh
+ENTRYPOINT /tmp/entrypoint.sh
