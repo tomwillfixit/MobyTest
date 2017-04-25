@@ -2,7 +2,7 @@ FROM golang:1.7.5-alpine3.5
 
 #Set ENV vars
 ENV CGO_ENABLED=0 \
-    OS_CONFIG
+    OS_CONFIG=
 
 #Install linuxKit 'moby' tool
 RUN set -ex \
