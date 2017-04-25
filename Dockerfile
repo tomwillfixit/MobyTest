@@ -5,16 +5,16 @@ ENV CGO_ENABLED=0 \
     OS_CONFIG=
 
 #Install linuxKit 'moby' tool
-RUN set -ex \
-    && apk update \
-    && apk add --no-cache \
-           bash \
+RUN apk add --no-cache --virtual .builddeps \
            git \
-           qemu-system-x86_64 \
            gcc \
+    && apk add --no-cache --virtual .rundeps \
+           bash \
            docker \
            openrc \
-    && go get -u github.com/moby/tool/cmd/moby
+           qemu-system-x86_64 \
+    && go get -u github.com/moby/tool/cmd/moby \
+    && apk del .builddeps
 
 #Add entrypoint
 COPY entrypoint.sh /tmp
