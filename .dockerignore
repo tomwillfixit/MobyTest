@@ -1,0 +1,6 @@
+images
+configs
+Dockerfile
+.git
+.gitignore
+*.md

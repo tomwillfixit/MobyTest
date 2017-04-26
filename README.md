@@ -2,9 +2,9 @@
 
 This repo will be used in future as an end-to-end test using infraKit, linuxKit and swarmKit.
 
-# Disclaimer 
+# Disclaimer
 
-Although I'm a #DockerCaptain this stuff is new to me. With that in mind I'm playing about with the new moby tooling. 
+Although I'm a #DockerCaptain this stuff is new to me. With that in mind I'm playing about with the new moby tooling.
 
 # First attempt
 
@@ -12,7 +12,7 @@ Followed the steps [here](https://github.com/linuxkit/linuxkit) and installed mo
 
 ## Commands
 ```
-moby build JenkinsOS.yml
+moby build configs/JenkinsOS.yml
 moby run JenkinsOS
 
 ```
@@ -33,12 +33,16 @@ Thought it would be even cooler to use Docker in Docker to run the moby tool, th
 
 ## Commands
 
+Update the `OS_CONFIG` environment var to build a different image
+
+For example to build the bundled `JenkinsOS.yml` image
+
 ```
-docker build -t mobytest:jenkins .
-docker run -it --privileged -v ${PWD}/images:/images mobytest:jenkins
+docker build -t mobytest .
+docker run -it --rm --privileged -e OS_CONFIG=JenkinsOS.yml -v ${PWD}/images:/images -v ${PWD}/configs:/configs mobytest
 ```
- 
-When the commands complete you should have 4 images stored in ${PWD}/images.  
+
+When the commands complete you should have 4 images stored in ${PWD}/images.
 ```
 tom-laptop:/scratch/MobyTest# ls images
 JenkinsOS-efi.iso  JenkinsOS-initrd.img  JenkinsOS.iso  JenkinsOS.vmdk

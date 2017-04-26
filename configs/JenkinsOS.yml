@@ -85,5 +85,5 @@ outputs:
   - format: kernel+initrd
   - format: iso-bios
   - format: iso-efi
-  - format: vmdk 
-  - format: qcow2 
+  - format: vmdk
+  - format: qcow2
